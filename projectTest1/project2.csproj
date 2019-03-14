@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A7E95234-558D-4E52-9209-09A04888E756}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>projectTest1</RootNamespace>
+    <AssemblyName>projectTest1</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MaterialSkin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MaterialSkin.0.2.1\lib\MaterialSkin.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Net, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LabFileUpload.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="content\materialize\fonts\roboto\Roboto-Bold.eot" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Bold.ttf" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Bold.woff" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Bold.woff2" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Light.eot" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Light.ttf" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Light.woff" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Light.woff2" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Medium.eot" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Medium.ttf" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Medium.woff" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Medium.woff2" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Regular.eot" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Regular.ttf" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Regular.woff" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Regular.woff2" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Thin.eot" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Thin.ttf" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Thin.woff" />
+    <None Include="content\materialize\fonts\roboto\Roboto-Thin.woff2" />
+    <None Include="content\materialize\font\material-design-icons\Material-Design-Icons.eot" />
+    <None Include="content\materialize\font\material-design-icons\Material-Design-Icons.ttf" />
+    <None Include="content\materialize\font\material-design-icons\Material-Design-Icons.woff" />
+    <None Include="content\materialize\font\material-design-icons\Material-Design-Icons.woff2" />
+    <None Include="content\materialize\font\roboto\Roboto-Bold.eot" />
+    <None Include="content\materialize\font\roboto\Roboto-Bold.ttf" />
+    <None Include="content\materialize\font\roboto\Roboto-Bold.woff" />
+    <None Include="content\materialize\font\roboto\Roboto-Bold.woff2" />
+    <None Include="content\materialize\font\roboto\Roboto-Light.eot" />
+    <None Include="content\materialize\font\roboto\Roboto-Light.ttf" />
+    <None Include="content\materialize\font\roboto\Roboto-Light.woff" />
+    <None Include="content\materialize\font\roboto\Roboto-Light.woff2" />
+    <None Include="content\materialize\font\roboto\Roboto-Medium.eot" />
+    <None Include="content\materialize\font\roboto\Roboto-Medium.ttf" />
+    <None Include="content\materialize\font\roboto\Roboto-Medium.woff" />
+    <None Include="content\materialize\font\roboto\Roboto-Medium.woff2" />
+    <None Include="content\materialize\font\roboto\Roboto-Regular.eot" />
+    <None Include="content\materialize\font\roboto\Roboto-Regular.ttf" />
+    <None Include="content\materialize\font\roboto\Roboto-Regular.woff" />
+    <None Include="content\materialize\font\roboto\Roboto-Regular.woff2" />
+    <None Include="content\materialize\font\roboto\Roboto-Thin.eot" />
+    <None Include="content\materialize\font\roboto\Roboto-Thin.ttf" />
+    <None Include="content\materialize\font\roboto\Roboto-Thin.woff" />
+    <None Include="content\materialize\font\roboto\Roboto-Thin.woff2" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Scripts\jquery-2.1.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\materialize\css\materialize.css" />
+    <Content Include="content\materialize\css\materialize.min.css" />
+    <Content Include="content\materialize\font\material-design-icons\LICENSE.txt" />
+    <Content Include="content\materialize\font\material-design-icons\Material-Design-Icons.svg" />
+    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\materialize\materialize.js" />
+    <Content Include="Scripts\materialize\materialize.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
