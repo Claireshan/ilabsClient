@@ -139,7 +139,6 @@ namespace projectTest1
            else
            {
                   MessageBox.Show("Lab already exits please close it");
-
            }      
                       
         }
@@ -228,8 +227,8 @@ namespace projectTest1
                 numberOfChannels = channels.Count();
                 numberOfSwitches = switches.Count();
                 string val = string.Format("Device Name: {0}\n", deviceName);
-                labCircuit.Image = Image.FromFile(Path.Combine(CFGFOLDER_PATH, "images","ON_OFF.png"));
                 CreateChannels(channels, hostAddress);
+                 label2.Visible = true;
                 CreateSwitches(switches, hostAddress);
                 ConnectDataSockets();                     
 
@@ -246,12 +245,11 @@ namespace projectTest1
             foreach (Switch _switch in labSwitches)
             {
                  NationalInstruments.UI.WindowsForms.Switch sw = new NationalInstruments.UI.WindowsForms.Switch();
-                 ((System.ComponentModel.ISupportInitialize)(sw)).BeginInit();
-                sw.BackColor = System.Drawing.Color.Silver;
+                 ((System.ComponentModel.ISupportInitialize)(sw)).BeginInit();               
                 sw.OffColor = System.Drawing.Color.Blue;
                 sw.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
                 sw.Size = new System.Drawing.Size(58, 77);
-                sw.SwitchStyle = NationalInstruments.UI.SwitchStyle.PushButton3D;
+                sw.SwitchStyle = NationalInstruments.UI.SwitchStyle.HorizontalSlide3D;
                 sw.TabIndex = 5;
                 sw.Value = true;
                 sw.Name = _switch.Name;              
@@ -389,58 +387,65 @@ namespace projectTest1
             
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             string myResponse = "";
+
             using (System.IO.StreamReader sr = new System.IO.StreamReader(response.GetResponseStream()))
             {
                 myResponse = sr.ReadToEnd();
             }
 
-            String serverdatetime = myResponse.ToString().Substring(1, myResponse.Length - 2);            
+            String serverdatetime = myResponse.ToString().Substring(1, myResponse.Length - 2);
             DateTime servertime = DateTime.Parse(serverdatetime, new System.Globalization.CultureInfo("pt-BR"));
-                       
+
             if (File.Exists(CFGFILE_PATH))
             {
                 string datetime = (from dev in XDocument.Load(CFGFILE_PATH).Descendants("Setting")
                                    where (string)dev.Attribute("Name") == "DateTime"
                                    select (string)dev.Attribute("Value").Value).FirstOrDefault();
-               
-               DateTime scheduletime = DateTime.Parse(datetime);
-               DateTime duration = scheduletime.AddMinutes(30);
+
+                DateTime scheduletime = DateTime.Parse(datetime);
+                DateTime duration = scheduletime.AddMinutes(30);
+                MessageBox.Show(servertime.ToString("hh:mm"));
+                MessageBox.Show(scheduletime.ToString("hh:mm"));
+                MessageBox.Show(duration.ToString("hh:mm"));
 
                 try
                 {
-                //MessageBox.Show(myResponse);
-                if (int.Parse(scheduletime.ToShortDateString())==int.Parse(servertime.ToShortDateString()))
-                {
-                    if (int.Parse(servertime.ToShortTimeString()) < int.Parse(duration.ToShortTimeString()))
+                    MessageBox.Show(myResponse);
+                    if (servertime.ToShortDateString().Equals(scheduletime.ToShortDateString()))
                     {
-                        timer1.Enabled = true;
-                        timer1.Start();
-                        LoadCurrentFile(CFGFILE_PATH);
+                        if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay <= duration.TimeOfDay)
+                        {
+                            timer1.Enabled = true;
+                            timer1.Start();
+                            LoadCurrentFile(CFGFILE_PATH);
+
+                        }
+                        else if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay > duration.TimeOfDay)
+                        {
+                            MessageBox.Show("please reschedule");
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("not yet time");
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("please reschedule someelse is using the lab");
+                        MessageBox.Show("Please varify date scheduled");
                     }
-                    
-                }
-                else if (int.Parse(scheduletime.ToShortDateString()) > int.Parse(servertime.ToShortDateString()))
-                {
-                    MessageBox.Show("not yet time");
-                }
-                else
-                {
-                    MessageBox.Show("please reschedule");
-                }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
-                }
-            }
-            else
+                }           
+                                            
+             }
+    
+             else
             {
                 MessageBox.Show("Upload lab file");
-            }          
+            }    
           
           }
 
@@ -479,6 +484,7 @@ namespace projectTest1
                      select
                          new XElement("ID", emp.ID,
                          new XElement("Image", emp.image)));
+
             // Build the document
             xdoc = new XDocument(
                new XDeclaration("1.0", "utf-8", "yes"), new XElement("root", frequencies, amplitude, labimages));
@@ -551,7 +557,15 @@ namespace projectTest1
             if (counter == 5) //elapsed five times
             {
                 counter = 0;
-                File.WriteAllText(labTimeFile, new_time.ToString());
+                if (Directory.Exists(CFGFOLDER_PATH))
+                {
+                    File.WriteAllText(labTimeFile, new_time.ToString());
+                }
+                else
+                {
+                    Directory.CreateDirectory(CFGFOLDER_PATH);
+                    File.WriteAllText(labTimeFile, new_time.ToString());
+                }
             }
             
         }
@@ -571,6 +585,7 @@ namespace projectTest1
         {
             timer1.Stop();
             DisConnectDataSockets();
+            labCircuit.Image = null;
             deleteXmlFile();
 
         }
@@ -625,7 +640,6 @@ namespace projectTest1
         {            
             if (pausestate == true)
             {
-                resume();
                 ConnectDataSockets();
                 resumeToolStripMenuItem.Enabled = false;
                 
@@ -636,33 +650,29 @@ namespace projectTest1
             }
             else
             {
-                resume();
-                LoadCurrentFile(CFGFILE_PATH);
-                resumeToolStripMenuItem.Enabled = false;
-            }            
-            
-        }
-        //resuming from a pause
-        private void resume()
-        {
-            if (File.Exists(labTimeFile))
-            {
-                string remainingtime = File.ReadAllText(labTimeFile);
-                if (int.Parse(remainingtime) != 0)
+                if (File.Exists(labTimeFile))
                 {
-                    time = int.Parse(remainingtime);
-                    timer1.Start();                    
+                    string remainingtime = File.ReadAllText(labTimeFile);
+                    if (int.Parse(remainingtime) != 0)
+                    {
+                        time = int.Parse(remainingtime);
+                        timer1.Start();
+                        LoadCurrentFile(CFGFILE_PATH);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No remaining time");
+                        DisConnectDataSockets();
+                    }
+
                 }
                 else
                 {
-                    MessageBox.Show("No remaining time");
+                    MessageBox.Show("No lab was running");
                 }
-                
-            }
-            else
-            {
-                MessageBox.Show("No lab was ran");
-            }
+                resumeToolStripMenuItem.Enabled = false;
+            }            
+            
         }
 
         public class Channel
@@ -684,7 +694,7 @@ namespace projectTest1
             public string Url { get; set; }
             public string DevicePath { get; set; }
 
-        }       
+        }           
         
     }
 }
