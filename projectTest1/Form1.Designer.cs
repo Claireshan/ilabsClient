@@ -55,6 +55,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ExistingLabList = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.waveformGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.knob1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.knob2)).BeginInit();
@@ -134,14 +136,15 @@
             this.comboBox1.ForeColor = System.Drawing.Color.Blue;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "SINE",
-            "COSINE",
-            "RECTANGULAR"});
+            "sine",
+            "square",
+            "triangle"});
             this.comboBox1.Location = new System.Drawing.Point(97, 526);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(128, 25);
             this.comboBox1.TabIndex = 3;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -209,9 +212,10 @@
             // 
             // closeLabToolStripMenuItem
             // 
+            this.closeLabToolStripMenuItem.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.closeLabToolStripMenuItem.Name = "closeLabToolStripMenuItem";
             this.closeLabToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
-            this.closeLabToolStripMenuItem.Text = "Close lab";
+            this.closeLabToolStripMenuItem.Text = "Close ";
             this.closeLabToolStripMenuItem.Click += new System.EventHandler(this.closeLabToolStripMenuItem_Click);
             // 
             // screenShotToolStripMenuItem
@@ -267,7 +271,7 @@
             this.Time.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Time.Font = new System.Drawing.Font("Yu Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Time.ForeColor = System.Drawing.Color.Blue;
-            this.Time.Location = new System.Drawing.Point(749, 26);
+            this.Time.Location = new System.Drawing.Point(749, 33);
             this.Time.Margin = new System.Windows.Forms.Padding(4);
             this.Time.Name = "Time";
             this.Time.Size = new System.Drawing.Size(50, 28);
@@ -337,6 +341,26 @@
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox1.Visible = false;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.Blue;
+            this.label5.Location = new System.Drawing.Point(649, 4);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(95, 21);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Existing labs";
+            // 
+            // ExistingLabList
+            // 
+            this.ExistingLabList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ExistingLabList.FormattingEnabled = true;
+            this.ExistingLabList.Location = new System.Drawing.Point(753, 4);
+            this.ExistingLabList.Name = "ExistingLabList";
+            this.ExistingLabList.Size = new System.Drawing.Size(136, 25);
+            this.ExistingLabList.TabIndex = 18;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -345,6 +369,8 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(902, 684);
+            this.Controls.Add(this.ExistingLabList);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.flowLayoutPanel1);
@@ -405,6 +431,8 @@
         private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resumeToolStripMenuItem;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox ExistingLabList;
     }
 }
 

@@ -32,10 +32,12 @@ namespace projectTest1
     {
         static string APPDATA_PATH = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // AppData folder
         static string CFGFOLDER_PATH = Path.Combine(APPDATA_PATH, "Configs");     // Path for program config folder
-        static string CFGFILE_PATH = Path.Combine(CFGFOLDER_PATH, "lab.xml");   // Path for config.txt file   
-        static string labReport_path = Path.Combine(CFGFOLDER_PATH, "labreport.xml"); //path for labreport
-        static string labzipfile = Path.Combine(CFGFOLDER_PATH, "labzipfile.xml");
+        string labzipfile = "";
+        string labfolder_path ="";
+        string CFGFILE_PATH = "";   // Path for config.txt file         
         string labTimeFile = Path.Combine(CFGFOLDER_PATH, "labTime.txt");
+        static string labReport_path = Path.Combine(CFGFOLDER_PATH, "labreport.txt"); // AppData folder
+        string lab;
         List<string> allknob1values = new List<string>();
         List<string> allknob2values = new List<string>();
         string deviceName;
@@ -51,10 +53,18 @@ namespace projectTest1
         int counter = 0;
         bool pausestate = false;
         bool fiinishstate = false;
+        string xmltotxt = null;
+        string encryptrpt = null;
+        public string Key = "Nsi2k19!";
         
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            ExistingLabList.SelectedItem = null;
+            ExistingLabList.SelectedText = "--select Lab--";
+            comboBox1.SelectedItem=null;
+            comboBox1.SelectedText = "sine";
+            existingLabs();
         }
 
         private void knob1_AfterChangeValue(object sender, AfterChangeNumericValueEventArgs e)
@@ -109,6 +119,28 @@ namespace projectTest1
                 return "failed";
             }
         }
+        //POST for changewave
+        //public async void Change_Wave(string amp, string freq)
+        //{
+        //    string baseAddress = "http://localhost:9000/api/values";
+        //    float amplitude = float.Parse(amp);
+        //    float frequency = float.Parse(freq);
+        //    HttpClient client = new HttpClient();
+        //    var ampfreq_values = new Dictionary<string, double>();
+        //    //ampfreq_values.Add( ,amplitude);
+        //    //ampfreq_values.Add(, frequency);
+        //    var content = new FormUrlEncodedContent();
+        //    var post_response = await client.PostAsync(baseAddress, content);
+        //    var response_string = await post_response.Content.ReadAsStringAsync();
+        //    if (post_response.StatusCode == System.Net.HttpStatusCode.OK)
+        //    {
+        //        // do something
+        //    }
+        //    else
+        //    {
+        //        // do something
+        //    }
+        //}
 
         public static string ToggleSwitches(string s1)
         {
@@ -124,8 +156,32 @@ namespace projectTest1
             {
                 return "failed";
             }
+            
+        }     
+        //POST for Switch toggle
+        //public async void Toggle_Switches(string s1)
+        //{
+        //    //making POST
+        //    string baseaddress = "http://localhost:9000/api/switch";
+        //    HttpClient client = new HttpClient();
+        //    var switch_values = new Dictionary<string, string>();
 
-        }                 
+        //    foreach (var sw in this.components.Components.OfType<NationalInstruments.UI.WindowsForms.Switch>())
+        //    {
+        //        switch_values.Add(sw.Name, GetSwState(sw.Value));
+        //    }
+        //    var content = new FormUrlEncodedContent(switch_values);          
+        //    var post_response = await client.PostAsync(baseaddress, content);
+        //    var response_string = await post_response.Content.ReadAsStringAsync();
+        //    if (post_response.StatusCode == System.Net.HttpStatusCode.OK)
+        //    {
+        //       // do something
+        //    }
+        //    else{
+        //       // do something
+        //    }
+        //}
+    
 
         //Uploading the xml file
         private void uploadLabToolStripMenuItem_Click(object sender, EventArgs e)
@@ -138,7 +194,7 @@ namespace projectTest1
            }
            else
            {
-                  MessageBox.Show("Lab already exits please close it");
+                  appDataXmlfile();
            }      
                       
         }
@@ -147,12 +203,9 @@ namespace projectTest1
         private void appDataXmlfile()
         {           
                 var openDialog = new OpenFileDialog()
-                {//"xml files (*.xml)|*.xml"
-                    InitialDirectory = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32",
+                {   
                     Filter = "Lab Files (*.zip)|*.zip",
-                    FilterIndex = 2,
-                    RestoreDirectory = true
-                };
+                 };
 
                 if (openDialog.ShowDialog() == DialogResult.OK)
                 {                   
@@ -162,20 +215,31 @@ namespace projectTest1
                     {
                         using (ZipArchive zip = ZipFile.Open(openDialog.FileName, ZipArchiveMode.Read))
                         {
-                            foreach (ZipArchiveEntry entry in zip.Entries)
+                            labzipfile = Path.GetFileNameWithoutExtension(openDialog.FileName);
+                            labfolder_path = Path.Combine(CFGFOLDER_PATH, labzipfile);
+                            CFGFILE_PATH = Path.Combine(labfolder_path, "lab.xml");
+
+                            if (!Directory.Exists(Path.Combine(CFGFOLDER_PATH, Path.GetFileNameWithoutExtension(openDialog.FileName))))
                             {
-                                if (entry.Name.Equals("lab.xml"))
+                                foreach (ZipArchiveEntry entry in zip.Entries)
                                 {
-                                    isValidLabFile = true;
-                                    break;
+                                    if (entry.Name.Equals("lab.xml"))
+                                    {
+                                        isValidLabFile = true;
+                                        break;
+                                    }
                                 }
+
+                                if (isValidLabFile)
+                                {                                                                   
+                                    zip.ExtractToDirectory(Path.Combine(CFGFOLDER_PATH, labzipfile));                                  
+                                   
+                                }     
                             }
-                          
-                            if (isValidLabFile)
+                            else
                             {
-                                zip.ExtractToDirectory(CFGFOLDER_PATH);                         
-                               
-                            }                           
+                                MessageBox.Show("Labfile already exists please just select i from the combo box!");
+                            }                                                  
                         }
                     }
 
@@ -183,14 +247,28 @@ namespace projectTest1
                     {
                         MessageBox.Show(ex.Message);
                     }
-
                 }           
+        }
+        
+        //adding existing labs to the combbox
+        private void existingLabs()
+        {
+            if (Directory.Exists(CFGFOLDER_PATH))
+            {
+                string[] existingFiles = Directory.GetDirectories(CFGFOLDER_PATH);
+                List<string> labsAvailable = new List<string>();
+                foreach (string item in existingFiles)
+                {
+                    labsAvailable.Add(Path.GetFileName(item));
+                }
+                ExistingLabList.Items.Clear();
+                ExistingLabList.Items.AddRange(labsAvailable.ToArray());
+            }
         }
         
         //loading the content from the xml file
         public void LoadCurrentFile(string path)
         {
-
             try
             {
             XDocument labDoc = XDocument.Load(path);
@@ -223,12 +301,12 @@ namespace projectTest1
                             }
                                          ).ToList<Channel>();
 
-
                 numberOfChannels = channels.Count();
                 numberOfSwitches = switches.Count();
                 string val = string.Format("Device Name: {0}\n", deviceName);
                 CreateChannels(channels, hostAddress);
-                 label2.Visible = true;
+                labCircuit.Image = Image.FromFile(Path.Combine(labfolder_path, "images", "ON_OFF" + ".png"));
+                label2.Visible = true;
                 CreateSwitches(switches, hostAddress);
                 ConnectDataSockets();                     
 
@@ -279,19 +357,19 @@ namespace projectTest1
 
                // ToggleSwitches(switchvalue);
             }
-            if (Directory.Exists(Path.Combine(CFGFOLDER_PATH, "images")))
+            if (Directory.Exists(Path.Combine(labfolder_path, "images")))
             {
                 try
                 {
                     val = val.Remove(val.Length - 1);
                     textBox1.Visible = false;
-                    labCircuit.Image = Image.FromFile(Path.Combine(CFGFOLDER_PATH, "images", val + ".png"));  
+                    labCircuit.Image = Image.FromFile(Path.Combine(labfolder_path, "images", val + ".png"));  
                 }
                 catch (Exception ex)
                 {
                     labCircuit.Image = null;
                     textBox1.Visible = true;
-                   // MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
             }
             else
@@ -395,57 +473,68 @@ namespace projectTest1
 
             String serverdatetime = myResponse.ToString().Substring(1, myResponse.Length - 2);
             DateTime servertime = DateTime.Parse(serverdatetime, new System.Globalization.CultureInfo("pt-BR"));
-
-            if (File.Exists(CFGFILE_PATH))
+            if (ExistingLabList.SelectedIndex > -1)
             {
-                string datetime = (from dev in XDocument.Load(CFGFILE_PATH).Descendants("Setting")
-                                   where (string)dev.Attribute("Name") == "DateTime"
-                                   select (string)dev.Attribute("Value").Value).FirstOrDefault();
-
-                DateTime scheduletime = DateTime.Parse(datetime);
-                DateTime duration = scheduletime.AddMinutes(30);
-                MessageBox.Show(servertime.ToString("hh:mm"));
-                MessageBox.Show(scheduletime.ToString("hh:mm"));
-                MessageBox.Show(duration.ToString("hh:mm"));
-
-                try
+                lab = ExistingLabList.GetItemText(ExistingLabList.SelectedItem);
+                labzipfile = lab;
+                labfolder_path = Path.Combine(CFGFOLDER_PATH, labzipfile);
+                CFGFILE_PATH = Path.Combine(labfolder_path, "lab.xml");
+                
+                if (File.Exists(CFGFILE_PATH))
                 {
-                    MessageBox.Show(myResponse);
-                    if (servertime.ToShortDateString().Equals(scheduletime.ToShortDateString()))
+                    string datetime = (from dev in XDocument.Load(CFGFILE_PATH).Descendants("Setting")
+                                       where (string)dev.Attribute("Name") == "DateTime"
+                                       select (string)dev.Attribute("Value").Value).FirstOrDefault();
+
+                    DateTime scheduletime = DateTime.Parse(datetime);
+                    DateTime duration = scheduletime.AddMinutes(30);
+                    //MessageBox.Show(servertime.ToString("hh:mm"));
+                    //MessageBox.Show(scheduletime.ToString("hh:mm"));
+                    //MessageBox.Show(duration.ToString("hh:mm"));
+
+                    try
                     {
-                        if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay <= duration.TimeOfDay)
+                        //  MessageBox.Show(myResponse);
+                        if (servertime.ToShortDateString().Equals(scheduletime.ToShortDateString()))
                         {
-                            timer1.Enabled = true;
-                            timer1.Start();
-                            LoadCurrentFile(CFGFILE_PATH);
+                            if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay <= duration.TimeOfDay)
+                            {
+                                timer1.Enabled = true;
+                                timer1.Start();
+                                LoadCurrentFile(CFGFILE_PATH);
 
-                        }
-                        else if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay > duration.TimeOfDay)
-                        {
-                            MessageBox.Show("please reschedule");
+                            }
+                            else if (servertime.TimeOfDay >= scheduletime.TimeOfDay && servertime.TimeOfDay > duration.TimeOfDay)
+                            {
+                                MessageBox.Show("please reschedule");
 
+                            }
+                            else
+                            {
+                                MessageBox.Show("not yet time");
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("not yet time");
+                            MessageBox.Show("Please varify date scheduled");
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Please varify date scheduled");
+                        MessageBox.Show(ex.Message);
                     }
+
                 }
-                catch (Exception ex)
+
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                }           
-                                            
-             }
-    
-             else
+                    MessageBox.Show("Upload lab file");
+                }    
+            }
+            else
             {
-                MessageBox.Show("Upload lab file");
-            }    
+                MessageBox.Show("Please select a lab to do!");
+            }
           
           }
 
@@ -456,6 +545,7 @@ namespace projectTest1
             using (Bitmap step1 = new Bitmap(waveformGraph1.ClientSize.Width, waveformGraph1.ClientSize.Height))
             {
                 waveformGraph1.DrawToBitmap(step1, waveformGraph1.ClientRectangle);
+               // waveformGraph1.DrawPlotAreaComponents(waveformPlot2);
                 using (MemoryStream mem = new MemoryStream())
                 {
                     step1.Save(mem, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -485,18 +575,24 @@ namespace projectTest1
                          new XElement("ID", emp.ID,
                          new XElement("Image", emp.image)));
 
-            // Build the document
+            //Build the xml document
             xdoc = new XDocument(
                new XDeclaration("1.0", "utf-8", "yes"), new XElement("root", frequencies, amplitude, labimages));
+
+            //convert xml created to text file to encrypt
+            //encryption does not tamper with base64 image string
+            xmltotxt = xdoc.ToString();
+            encryptrpt = AesEncryption.EncryptDataAES(xmltotxt, Key);
             
             
             if (Directory.Exists(CFGFOLDER_PATH))
             {                
                 
                 if (!File.Exists(labReport_path))
-                {
-                    xdoc.Save(labReport_path);
-                    
+                {                  
+                    StreamWriter savereport = new StreamWriter(labReport_path, true);
+                    savereport.WriteLine(encryptrpt);
+                    savereport.Close();                  
                 }
                 else
                 {
@@ -514,7 +610,7 @@ namespace projectTest1
             {
                 if(File.Exists(labReport_path))
                 {
-                    string dest= "labreports.xml";
+                    string dest= "labreport.txt";
                     string targetPath = @"C:\Users\ilabsdeveloper\Downloads";
                     string destFile = Path.Combine(targetPath, dest);
                     if (!File.Exists(destFile))
@@ -554,17 +650,21 @@ namespace projectTest1
             }
 
             counter++;
-            if (counter == 5) //elapsed five times
+            if (counter == 2) //elapsed five times
             {
                 counter = 0;
+                existingLabs();
                 if (Directory.Exists(CFGFOLDER_PATH))
                 {
-                    File.WriteAllText(labTimeFile, new_time.ToString());
+                    string runlab = ExistingLabList.GetItemText(ExistingLabList.SelectedItem); 
+                    File.WriteAllText(labTimeFile, new_time.ToString() + "\n" +runlab);
+                    //File.WriteAllText(labTimeFile, "\n" + lab);
                 }
                 else
                 {
                     Directory.CreateDirectory(CFGFOLDER_PATH);
                     File.WriteAllText(labTimeFile, new_time.ToString());
+                  //  File.WriteAllText(labTimeFile, "\n" + lab);
                 }
             }
             
@@ -586,7 +686,8 @@ namespace projectTest1
             timer1.Stop();
             DisConnectDataSockets();
             labCircuit.Image = null;
-            deleteXmlFile();
+            System.Windows.Forms.Application.ExitThread(); 
+            //deleteXmlFile();
 
         }
 
@@ -652,7 +753,14 @@ namespace projectTest1
             {
                 if (File.Exists(labTimeFile))
                 {
-                    string remainingtime = File.ReadAllText(labTimeFile);
+
+                    string remainingtime = File.ReadLines(labTimeFile).First();
+                    string labrunning = File.ReadLines(labTimeFile).ElementAtOrDefault(1);
+                    ExistingLabList.SelectedText = labrunning;
+                    labzipfile = labrunning;
+                    labfolder_path = Path.Combine(CFGFOLDER_PATH, labzipfile);
+                    CFGFILE_PATH = Path.Combine(labfolder_path, "lab.xml");
+                  //  File.AppendAllText(labTimeFile, "\n" + ExistingLabList.SelectedText);
                     if (int.Parse(remainingtime) != 0)
                     {
                         time = int.Parse(remainingtime);
@@ -694,7 +802,23 @@ namespace projectTest1
             public string Url { get; set; }
             public string DevicePath { get; set; }
 
-        }           
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string wave_type = comboBox1.GetItemText(comboBox1.SelectedItem);
+            if (wave_type == "sine"){
+                 
+            }
+            else if (wave_type == "square")
+            {
+
+            }
+            else
+            {
+
+            }
+        }                
         
     }
 }
